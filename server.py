@@ -37,7 +37,7 @@ def broadcast(msg):
 				time.sleep(2)
 				client.send(bytes(msg, 'utf8'))
 		except Exception as e:
-			print('[EXCEPTION]',e)
+			print('[3:EXCEPTION]',e)
 
 
 def evaluate(num1 , num2 , command):
@@ -51,13 +51,13 @@ def evaluate(num1 , num2 , command):
 def client_communication(person):
 	client = person.client
 	run = True
-	while run:
-		try:
+	try:
+		while run:
 			msg = client.recv(BUFSIZ).decode('utf8')
 			print(msg)
 			broadcast(msg)
 			if msg.lower() == 'quit':
-				persons.remove(person)
+				Persons.remove(person)
 				print("client has left the chat")
 
 			else:
@@ -72,8 +72,10 @@ def client_communication(person):
 				print(str(num1) + ' ' + command +' '+ str(num2))
 				broadcast(str(num1) + ' ' + command +' '+ str(num2))
 				evaluate(num1,num2,command)
-		except Exception as e:
-			print("[EXCEPTION]",e)
+	except Exception as e:
+			run = False
+			Persons.remove(person)
+			print("client has left the chat")
 			client.close()
 
 
@@ -91,7 +93,7 @@ def wait_for_communication(SERVER):
 			Thread(target=client_communication,args=(person,)).start()
 
 		except Exception as e:
-			print('[EXCEPTION]',e)
+			print('[1:EXCEPTION]',e)
 			client.close()
 	print('[SERVER CRASHED]')
 
