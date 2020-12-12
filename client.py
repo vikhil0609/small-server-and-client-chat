@@ -27,7 +27,6 @@ class Client:
 					print(msg)
 					return msg
 			except Exception as e:
-				print('[EXCEPTION]',e)
 				terminting_socket()
 
 	def send_messages(self,msg):
