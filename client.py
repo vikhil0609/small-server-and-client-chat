@@ -4,7 +4,7 @@ import socket
 
 
 HOST = socket.gethostbyname(socket.gethostname())
-PORT = 5050
+PORT = 5000
 ADDR = (HOST,PORT)
 BUFSIZ = 1024
 MAX_CONNECTIONS = 10
