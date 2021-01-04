@@ -7,10 +7,10 @@ import datetime
 
 
 HOST = socket.gethostbyname(socket.gethostname())
-PORT = 5050
+PORT = 5000
 ADDR = (HOST,PORT)
 BUFSIZ = 1024
-MAX_CONNECTIONS = 2
+MAX_CONNECTIONS = 1
 SERVER = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 SERVER.bind(ADDR)
 
@@ -79,18 +79,19 @@ def client_communication(person):
 			client.close()
 
 
-def wait_for_communication(SERVER):
+def wait_for_communication(SERVER,version):
 	global person
 	run = True
 	while run:
 		try:
-			client , addr = SERVER.accept()
-			person = Person(addr  , client)
-			Persons.append(person)
-			print(f"[CONNECTION] from {addr} at {datetime.datetime.now()}")
-			message = "TEXT TCP 1.0"
-			broadcast("SERVER:"+message)
-			Thread(target=client_communication,args=(person,)).start()
+                        client , addr = SERVER.accept()
+                        person = Person(addr  , client)
+                        Persons.append(person)
+                        print(f"[CONNECTION] from {addr} at {datetime.datetime.now()}")
+                        message = f"TEXT TCP {version} "
+                        broadcast("SERVER:"+message)
+                        version = version + float(0.1)
+                        Thread(target=client_communication,args=(person,)).start()
 
 		except Exception as e:
 			print('[1:EXCEPTION]',e)
@@ -102,7 +103,8 @@ def wait_for_communication(SERVER):
 if __name__ == '__main__':
 	SERVER.listen(MAX_CONNECTIONS)
 	print('[STARTED] waiting for connection')
-	ACCEPT_THREAD = Thread(target=wait_for_communication,args=(SERVER,))
+	version = float(1.0)
+	ACCEPT_THREAD = Thread(target=wait_for_communication,args=(SERVER,version))
 	ACCEPT_THREAD.start()
 	ACCEPT_THREAD.join()
 	SERVER.close()
